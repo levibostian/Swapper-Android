@@ -1,0 +1,42 @@
+language: android
+dist: trusty
+jdk:
+  - oraclejdk8
+
+# Installs the newest platform tools instead of the outdated v23 travis has by default
+android:
+  components:
+    # Below 3 lines are to download the newer android tools. Tools is listed twice on purpose. https://docs.travis-ci.com/user/languages/android/#installing-a-newer-sdk-platform-tools-revision
+    - tools
+    - platform-tools
+    - tools
+    # Other components needed for the build.
+    - build-tools-29.0.2
+    - android-29
+  licenses:
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
+env:
+  global:
+  # BINTRAY_USERNAME - username of bintray account to publish artifact to
+  # BINTRAY_KEY - key of bintray account to publish artifact to
+
+jobs:
+  include:
+    - stage: deploy
+      script:
+        - ./gradlew clean install; ./gradlew bintrayUpload;
+
+stages:
+  - name: deploy
+    if: tag IS present

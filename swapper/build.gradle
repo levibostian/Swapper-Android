@@ -1,16 +1,21 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.jetbrains.dokka-android'
+
+ext {
+    artifact = 'swapper'
+}
+
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion build_tools_version
 
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName swapper_version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -32,3 +37,21 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
+
+repositories {
+    mavenCentral()
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "docs/javadoc"
+    moduleName = 'swapper'
+}
+
+apply from: rootProject.file('gradle/publish.gradle')
