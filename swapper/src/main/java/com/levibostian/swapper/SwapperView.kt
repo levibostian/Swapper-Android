@@ -1,5 +1,6 @@
 package com.levibostian.swapper
 
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.annotation.TargetApi
@@ -8,7 +9,7 @@ import android.view.View
 import android.widget.FrameLayout
 
 typealias SwapperViewId = String
-typealias SwapperViewSwapAnimator = (oldView: View, newView: View, duration: Long, onComplete: () -> Unit) -> Unit
+typealias SwapperViewSwapAnimator = (oldView: View, newView: View, duration: Long, onComplete: () -> Unit) -> Animator
 
 class SwapperView: FrameLayout {
 
@@ -38,6 +39,8 @@ class SwapperView: FrameLayout {
         }
 
     private var currentlyShownViewId: Pair<SwapperViewId, View>? = null
+
+    private var _swapAnimatorAnimator: Animator? = null
 
     private val children: List<View>
     get() {
@@ -109,7 +112,13 @@ class SwapperView: FrameLayout {
         if (currentlyShownView == null) {
             doneWithAnimation()
         } else {
-            swapAnimator(currentlyShownView, viewToSwapTo, animationDuration) {
+            _swapAnimatorAnimator?.removeAllListeners()
+            _swapAnimatorAnimator?.end()
+
+            currentlyShownView.clearAnimation()
+            viewToSwapTo.clearAnimation()
+
+            _swapAnimatorAnimator = swapAnimator(currentlyShownView, viewToSwapTo, animationDuration) {
                 doneWithAnimation()
             }
         }
