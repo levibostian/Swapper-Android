@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "semantic-release-android-jcenter",
+    "@semantic-release/git",
+    "@semantic-release/github"
+  ]
+}
