@@ -2,7 +2,7 @@ package com.levibostian.swapperexample
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import coil.api.load
+import coil.load
 import com.levibostian.swapper.SwapperView
 import kotlinx.android.synthetic.main.activity_main.*
 
