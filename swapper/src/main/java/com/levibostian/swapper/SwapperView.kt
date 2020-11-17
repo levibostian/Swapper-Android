@@ -1,16 +1,16 @@
 package com.levibostian.swapper
 
-import android.content.Context
-import android.util.AttributeSet
 import android.annotation.TargetApi
+import android.content.Context
 import android.os.Build.VERSION_CODES
+import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 
 typealias SwapperViewId = String
 typealias SwapperViewSwapAnimator = (oldView: View, newView: View, duration: Long, onComplete: () -> Unit) -> Unit
 
-class SwapperView: FrameLayout {
+class SwapperView : FrameLayout {
 
     companion object {
         val config: SwapperConfig = SwapperConfig
@@ -40,15 +40,15 @@ class SwapperView: FrameLayout {
     private var currentlyShownViewId: Pair<SwapperViewId, View>? = null
 
     private val children: List<View>
-    get() {
-        val children: MutableList<View> = mutableListOf()
+        get() {
+            val children: MutableList<View> = mutableListOf()
 
-        for (index in 0 until childCount) {
-            children.add(getChildAt(index))
+            for (index in 0 until childCount) {
+                children.add(getChildAt(index))
+            }
+
+            return children
         }
-
-        return children
-    }
 
     var viewMap: Map<SwapperViewId, View>? = null
         set(value) {
@@ -66,14 +66,14 @@ class SwapperView: FrameLayout {
             if (!currentlyShownViewFound) hideAllChildren()
         }
 
-    constructor(context: Context): this(context, null)
+    constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initialize(context, attrs, defStyleAttr)
     }
     @TargetApi(VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
         initialize(context, attrs, defStyleAttr)
     }
 
@@ -113,5 +113,4 @@ class SwapperView: FrameLayout {
             }
         }
     }
-
 }

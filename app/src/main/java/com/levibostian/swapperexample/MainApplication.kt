@@ -3,7 +3,6 @@ package com.levibostian.swapperexample
 import android.app.Application
 import coil.Coil
 import coil.ImageLoader
-import coil.ImageLoaderFactory
 
 class MainApplication : Application() {
 
@@ -17,5 +16,4 @@ class MainApplication : Application() {
             }.build()
         }
     }
-
 }
