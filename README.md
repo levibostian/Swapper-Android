@@ -95,7 +95,9 @@ class MainActivity: AppCompatActivity() {
                 Pair(SwapperViews.SECOND_VIEW.name, second_view)
             )
             // When `SwapperView` initializes, it hides all of it's children by default. You must call `swapTo()` to swap to your first view.
-            swapTo(SwapperViews.FIRST_VIEW.name) {}
+            swapTo(SwapperViews.FIRST_VIEW.name) {
+                // optional callback that's called when animation is complete.
+            }
         }
     }
 

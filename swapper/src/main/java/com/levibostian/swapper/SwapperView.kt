@@ -90,7 +90,7 @@ class SwapperView : FrameLayout {
         }
     }
 
-    @Synchronized fun swapTo(id: SwapperViewId, onComplete: () -> Unit) {
+    @Synchronized fun swapTo(id: SwapperViewId, onComplete: (() -> Unit)? = null) {
         checkNotNull(viewMap) { "Can't swap to a view if you have not set viewMap" }
         if (currentlyShownViewId?.first == id) return
 
@@ -102,7 +102,7 @@ class SwapperView : FrameLayout {
             viewToSwapTo.visibility = View.VISIBLE
             currentlyShownView?.visibility = View.GONE
 
-            onComplete()
+            onComplete?.invoke()
         }
 
         if (currentlyShownView == null) {
