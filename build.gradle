@@ -7,7 +7,7 @@ buildscript {
 
     ext {
         projectName = 'Swapper' // Bintray Repo name. 
-        packageName = 'com.levibostian.swapper' // Bintray package name inside of the repo. 
+        packageName = 'com.levibostian.swapper' // Bintray package name inside of the repo.
         libraryDescription = 'Swap between many different Android Views within your app quick and easy.'
         siteUrl = 'https://github.com/levibostian/Swapper-Android'
         gitUrl = 'https://github.com/levibostian/Swapper-Android.git'

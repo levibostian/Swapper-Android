@@ -1,5 +1,6 @@
 package com.levibostian.swapper
 
+import android.animation.Animator
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build.VERSION_CODES
@@ -7,8 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 
-typealias SwapperViewId = String
-typealias SwapperViewSwapAnimator = (oldView: View, newView: View, duration: Long, onComplete: () -> Unit) -> Unit
+typealias SwapperViewSwapAnimator = (oldView: View, newView: View, duration: Long, onComplete: () -> Unit) -> Animator
 
 class SwapperView : FrameLayout {
 
@@ -37,7 +37,11 @@ class SwapperView : FrameLayout {
             return _swapAnimator ?: config.swapAnimator
         }
 
-    private var currentlyShownViewId: Pair<SwapperViewId, View>? = null
+    private var currentlyShownViewId: Int? = null
+    private val currentlyShownView: View?
+        get() = children.filter { it.id == currentlyShownViewId }.firstOrNull()
+
+    private var _swapAnimatorAnimator: Animator? = null
 
     private val children: List<View>
         get() {
@@ -48,22 +52,6 @@ class SwapperView : FrameLayout {
             }
 
             return children
-        }
-
-    @Transient var viewMap: Map<SwapperViewId, View>? = null
-        set(value) {
-            field = value
-
-            var currentlyShownViewFound = false
-            value?.forEach { mapView ->
-                val id = mapView.key
-                val view = mapView.value
-
-                children.firstOrNull { it == view } ?: throw IllegalArgumentException("Cannot add view, $mapView, as it's not a child.")
-                if (id == currentlyShownViewId?.first) currentlyShownViewFound = true
-            }
-
-            if (!currentlyShownViewFound) hideAllChildren()
         }
 
     constructor(context: Context) : this(context, null)
@@ -90,26 +78,30 @@ class SwapperView : FrameLayout {
         }
     }
 
-    @Synchronized fun swapTo(id: SwapperViewId, onComplete: () -> Unit) {
-        checkNotNull(viewMap) { "Can't swap to a view if you have not set viewMap" }
-        if (currentlyShownViewId?.first == id) return
+    @Synchronized fun swapTo(viewToSwapTo: View, onComplete: (() -> Unit)? = null) {
+        if (!children.contains(viewToSwapTo)) throw IllegalArgumentException("View must be child to swap to it. Given: ${viewToSwapTo.id}, children: ${children.map { it.id }.joinToString(", ")}")
+        if (currentlyShownViewId == id) return
 
-        val viewToSwapTo = viewMap!!.getValue(id)
-        val currentlyShownView = currentlyShownViewId?.second
-        currentlyShownViewId = Pair(id, viewToSwapTo)
+        val oldView = currentlyShownView
+        currentlyShownViewId = viewToSwapTo.id // set this here to fix bug: https://github.com/levibostian/Swapper-Android/issues/3
 
-        fun doneWithAnimation() {
+        if (oldView == null) { // first time calling swapTo(). Do not perform an animation
+            hideAllChildren() // This is here because sometimes childCount == 0 when this View is constructed. So, run it here just to make sure it did run.
+
+            // We are not animating. Set visibility here instead.
             viewToSwapTo.visibility = View.VISIBLE
-            currentlyShownView?.visibility = View.GONE
+            oldView?.visibility = View.GONE
 
-            onComplete()
-        }
-
-        if (currentlyShownView == null) {
-            doneWithAnimation()
+            onComplete?.invoke()
         } else {
-            swapAnimator(currentlyShownView, viewToSwapTo, animationDuration) {
-                doneWithAnimation()
+            _swapAnimatorAnimator?.removeAllListeners()
+            _swapAnimatorAnimator?.end()
+
+            oldView.clearAnimation()
+            viewToSwapTo.clearAnimation()
+
+            _swapAnimatorAnimator = swapAnimator(oldView, viewToSwapTo, animationDuration) {
+                onComplete?.invoke()
             }
         }
     }

@@ -8,11 +8,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    enum class SwapperViews {
-        FIRST_VIEW,
-        SECOND_VIEW
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,24 +17,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        swapper_view.apply {
-            viewMap = mapOf(
-                Pair(SwapperViews.FIRST_VIEW.name, first_view),
-                Pair(SwapperViews.SECOND_VIEW.name, second_view)
-            )
-            swapTo(SwapperViews.FIRST_VIEW.name) {
-                first_view_imageview.load("https://raw.githubusercontent.com/levibostian/Swapper-iOS/d494bc41894b5e5bc7eeacc162a96ddadca024cc/Example/Swapper/Images.xcassets/little_hill.imageset/little_hill.jpg")
-            }
-        }
+        swapper_view.swapTo(first_view)
+
+        first_view_imageview.load("https://raw.githubusercontent.com/levibostian/Swapper-iOS/d494bc41894b5e5bc7eeacc162a96ddadca024cc/Example/Swapper/Images.xcassets/little_hill.imageset/little_hill.jpg")
 
         first_view_swap_button.setOnClickListener {
-            swapper_view.swapTo(SwapperViews.SECOND_VIEW.name) {
+            swapper_view.swapTo(second_view) {
                 second_view_imageview.load("https://raw.githubusercontent.com/levibostian/Swapper-iOS/d494bc41894b5e5bc7eeacc162a96ddadca024cc/Example/Swapper/Images.xcassets/mt_mckinley.imageset/mt_mckinley.jpg")
             }
         }
 
         second_view_swap_button.setOnClickListener {
-            swapper_view.swapTo(SwapperViews.FIRST_VIEW.name) {}
+            swapper_view.swapTo(first_view)
         }
 
         animation_duration_100.setOnClickListener { SwapperView.config.animationDuration = 100 }

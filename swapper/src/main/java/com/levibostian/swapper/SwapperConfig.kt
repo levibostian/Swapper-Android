@@ -46,5 +46,7 @@ object SwapperConfig {
         animatorSet.playTogether(fadeOut, fadeIn)
 
         animatorSet.start()
+
+        animatorSet
     }
 }
