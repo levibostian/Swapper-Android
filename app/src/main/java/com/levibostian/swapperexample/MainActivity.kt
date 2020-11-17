@@ -1,12 +1,12 @@
 package com.levibostian.swapperexample
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import coil.api.load
+import androidx.appcompat.app.AppCompatActivity
+import coil.load
 import com.levibostian.swapper.SwapperView
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity: AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     enum class SwapperViews {
         FIRST_VIEW,
@@ -47,5 +47,4 @@ class MainActivity: AppCompatActivity() {
         animation_duration_1s.setOnClickListener { SwapperView.config.animationDuration = 1 * 1000 }
         animation_duration_5s.setOnClickListener { SwapperView.config.animationDuration = 5 * 1000 }
     }
-
 }

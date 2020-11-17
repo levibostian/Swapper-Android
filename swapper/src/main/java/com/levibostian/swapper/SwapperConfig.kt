@@ -1,12 +1,9 @@
 package com.levibostian.swapper
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.view.View
-import android.animation.AnimatorSet
-import kotlin.jvm.functions.Function0
-
-
 
 object SwapperConfig {
 
@@ -14,7 +11,7 @@ object SwapperConfig {
 
     var swapAnimator: SwapperViewSwapAnimator = { oldView, newView, duration, onComplete ->
         val fadeOut = ObjectAnimator.ofFloat(oldView, "alpha", 1f, 0f).setDuration(duration).apply {
-            addListener(object: Animator.AnimatorListener {
+            addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                     newView.visibility = View.GONE
                 }
@@ -29,7 +26,7 @@ object SwapperConfig {
         }
 
         val fadeIn = ObjectAnimator.ofFloat(newView, "alpha", 0f, 1f).setDuration(duration).apply {
-            addListener(object: Animator.AnimatorListener {
+            addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                     newView.visibility = View.VISIBLE
                 }
@@ -50,5 +47,4 @@ object SwapperConfig {
 
         animatorSet.start()
     }
-
 }

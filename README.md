@@ -145,7 +145,9 @@ Swapper comes with an example app you can use to play with the library. To run t
 
 ## Development
 
-Swapper is a pretty simple Android library project. At this time, all you need to do is open up the project in Android Studio and you are ready to go!
+* Install git hooks: `./hooks/autohook.sh install`
+* Open up Swapper project in Android Studio. 
+* Get to writing code!
 
 ## Author
 

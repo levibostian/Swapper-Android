@@ -1,0 +1,27 @@
+name: Deployment 
+on:
+  push:
+    branches:
+      - master 
+      - beta 
+
+env:
+  BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
+  BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      - name: Semantic release 
+        run: npm i semantic-release-android-jcenter @semantic-release/git @semantic-release/github @semantic-release/changelog && npx semantic-release
+        env: 
+          GITHUB_TOKEN: ${{ secrets.REPOS_PUSH_GITHUB_TOKEN }}

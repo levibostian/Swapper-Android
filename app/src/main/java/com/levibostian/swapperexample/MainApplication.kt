@@ -9,12 +9,11 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        Coil.setDefaultImageLoader {
-            ImageLoader(this) {
+        Coil.setImageLoader {
+            ImageLoader.Builder(this).apply {
                 placeholder(R.drawable.ic_launcher_background)
                 error(R.drawable.ic_launcher_foreground)
-            }
+            }.build()
         }
     }
-
 }
