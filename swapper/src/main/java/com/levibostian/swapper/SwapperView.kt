@@ -50,7 +50,7 @@ class SwapperView : FrameLayout {
             return children
         }
 
-    var viewMap: Map<SwapperViewId, View>? = null
+    @Transient var viewMap: Map<SwapperViewId, View>? = null
         set(value) {
             field = value
 
@@ -90,7 +90,7 @@ class SwapperView : FrameLayout {
         }
     }
 
-    fun swapTo(id: SwapperViewId, onComplete: () -> Unit) {
+    @Synchronized fun swapTo(id: SwapperViewId, onComplete: () -> Unit) {
         checkNotNull(viewMap) { "Can't swap to a view if you have not set viewMap" }
         if (currentlyShownViewId?.first == id) return
 
