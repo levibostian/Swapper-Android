@@ -1,5 +1,6 @@
 package com.levibostian.swapper
 
+import android.animation.Animator
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build.VERSION_CODES
@@ -7,7 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 
-typealias SwapperViewSwapAnimator = (oldView: View, newView: View, duration: Long, onComplete: () -> Unit) -> Unit
+typealias SwapperViewSwapAnimator = (oldView: View, newView: View, duration: Long, onComplete: () -> Unit) -> Animator
 
 class SwapperView : FrameLayout {
 
@@ -39,6 +40,8 @@ class SwapperView : FrameLayout {
     private var currentlyShownViewId: Int? = null
     private val currentlyShownView: View?
         get() = children.filter { it.id == currentlyShownViewId }.firstOrNull()
+
+    private var _swapAnimatorAnimator: Animator? = null
 
     private val children: List<View>
         get() {
@@ -79,23 +82,26 @@ class SwapperView : FrameLayout {
         if (!children.contains(viewToSwapTo)) throw IllegalArgumentException("View must be child to swap to it. Given: ${viewToSwapTo.id}, children: ${children.map { it.id }.joinToString(", ")}")
         if (currentlyShownViewId == id) return
 
-        val isFirstView = currentlyShownViewId == null
         val oldView = currentlyShownView
-        currentlyShownViewId = viewToSwapTo.id
+        currentlyShownViewId = viewToSwapTo.id // set this here to fix bug: https://github.com/levibostian/Swapper-Android/issues/3
 
-        fun doneWithAnimation() {
+        if (oldView == null) { // first time calling swapTo(). Do not perform an animation
+            hideAllChildren() // This is here because sometimes childCount == 0 when this View is constructed. So, run it here just to make sure it did run.
+
+            // We are not animating. Set visibility here instead.
             viewToSwapTo.visibility = View.VISIBLE
             oldView?.visibility = View.GONE
 
             onComplete?.invoke()
-        }
-
-        if (isFirstView) {
-            hideAllChildren()
-            doneWithAnimation()
         } else {
-            swapAnimator(oldView!!, viewToSwapTo, animationDuration) {
-                doneWithAnimation()
+            _swapAnimatorAnimator?.removeAllListeners()
+            _swapAnimatorAnimator?.end()
+
+            oldView.clearAnimation()
+            viewToSwapTo.clearAnimation()
+
+            _swapAnimatorAnimator = swapAnimator(oldView, viewToSwapTo, animationDuration) {
+                onComplete?.invoke()
             }
         }
     }
