@@ -96,12 +96,11 @@ class SwapperView: FrameLayout {
 
         val viewToSwapTo = viewMap!!.getValue(id)
         val currentlyShownView = currentlyShownViewId?.second
+        currentlyShownViewId = Pair(id, viewToSwapTo)
 
         fun doneWithAnimation() {
             viewToSwapTo.visibility = View.VISIBLE
             currentlyShownView?.visibility = View.GONE
-
-            currentlyShownViewId = Pair(id, viewToSwapTo)
 
             onComplete()
         }

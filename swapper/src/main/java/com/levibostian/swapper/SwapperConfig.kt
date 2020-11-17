@@ -4,9 +4,6 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.view.View
 import android.animation.AnimatorSet
-import kotlin.jvm.functions.Function0
-
-
 
 object SwapperConfig {
 
