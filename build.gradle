@@ -6,13 +6,10 @@ buildscript {
     ext.build_tools_version = "30.0.0"
 
     ext {
-        swapper_version = "0.1.0"
-        bintrayRepo = 'Swapper'
-        libraryName = 'Swapper'
-        bintrayPackageName = 'com.levibostian.swapper'
-        publishedGroupId = 'com.levibostian.swapper'
+        projectName = 'Swapper' // Bintray Repo name. 
+        packageName = 'com.levibostian.swapper' // Bintray package name inside of the repo. 
         libraryDescription = 'Swap between many different Android Views within your app quick and easy.'
-        siteUrl = 'https://levibostian.github.io/Swapper-Android/'
+        siteUrl = 'https://github.com/levibostian/Swapper-Android'
         gitUrl = 'https://github.com/levibostian/Swapper-Android.git'
         allLicenses = ["MIT"]
     }

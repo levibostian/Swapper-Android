@@ -1,17 +1,36 @@
+/**
+See README document to learn how to use this file: https://github.com/levibostian/Android-JCenter
+
+Config file version: 1.0.0
+*/
+
+// variables. 
+// Required 
+def projectName = project.findProperty('projectName') ?: exception("Forgot to set `projectName` project property.")
+def packageName = project.findProperty('packageName') ?: exception("Forgot to set `packageName` project property.")
+def libraryDescription = project.findProperty('libraryDescription') ?: exception("Forgot to set `libraryDescription` project property.")
+def siteUrl = project.findProperty('siteUrl') ?: exception("Forgot to set `siteUrl` project property.")
+def gitUrl = project.findProperty('gitUrl') ?: exception("Forgot to set `gitUrl` project property.")
+def allLicenses = project.findProperty('allLicenses') ?: texception("Forgot to set `allLicenses` project property.")
+def artifact = project.findProperty('artifact') ?: exception("Forgot to set `artifact` project property.")
+// Optional
+def overwritePackageVersions = project.findProperty('overwritePackageVersions') ?: false
+def publicDownloadNumbers = project.findProperty('publicDownloadNumbers') ?: false
+
 // Maven install
 apply plugin: 'com.github.dcendents.android-maven'
 
-group = publishedGroupId // Maven Group ID for the artifact
-version = swapper_version
+group = packageName
+version = project.findProperty("version") ?: exception("You are not using the `gradle.properties` file to store the version of software. View the documentation for this project to learn more.")
 
 install {
     repositories.mavenInstaller {
         pom.project {
             packaging 'aar'
-            groupId publishedGroupId
+            groupId packageName
             artifactId artifact
 
-            name libraryName
+            name projectName
             description libraryDescription
             url siteUrl
 
@@ -24,22 +43,13 @@ install {
     }
 }
 
-// some artifacts
-apply plugin: 'org.jetbrains.dokka-android'
-
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from android.sourceSets.main.java.srcDirs
 }
 
-task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
-    classifier = 'javadoc'
-    from "$buildDir/javadoc"
-}
-
 artifacts {
     archives sourcesJar
-    archives javadocJar
 }
 
 // Bintray publish
@@ -51,17 +61,21 @@ bintray {
 
     configurations = ['archives']
     pkg {
-        repo = bintrayRepo
-        name = bintrayPackageName
+        repo = projectName
+        name = packageName
         desc = libraryDescription
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = allLicenses
         publish = true
-        override = false // Overwrite published versions already published.
-        publicDownloadNumbers = true
+        override = overwritePackageVersions
+        publicDownloadNumbers = publicDownloadNumbers
         version {
             desc = libraryDescription
         }
     }
+}
+
+def exception(String message) {
+    throw new InvalidUserDataException("[levibostian/Bintray-Maven-Configs] " + message)
 }
