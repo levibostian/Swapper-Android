@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 
-typealias SwapperViewId = String
 typealias SwapperViewSwapAnimator = (oldView: View, newView: View, duration: Long, onComplete: () -> Unit) -> Unit
 
 class SwapperView : FrameLayout {
@@ -37,7 +36,9 @@ class SwapperView : FrameLayout {
             return _swapAnimator ?: config.swapAnimator
         }
 
-    private var currentlyShownViewId: Pair<SwapperViewId, View>? = null
+    private var currentlyShownViewId: Int? = null
+    private val currentlyShownView: View?
+        get() = children.filter { it.id == currentlyShownViewId }.firstOrNull()
 
     private val children: List<View>
         get() {
@@ -48,22 +49,6 @@ class SwapperView : FrameLayout {
             }
 
             return children
-        }
-
-    @Transient var viewMap: Map<SwapperViewId, View>? = null
-        set(value) {
-            field = value
-
-            var currentlyShownViewFound = false
-            value?.forEach { mapView ->
-                val id = mapView.key
-                val view = mapView.value
-
-                children.firstOrNull { it == view } ?: throw IllegalArgumentException("Cannot add view, $mapView, as it's not a child.")
-                if (id == currentlyShownViewId?.first) currentlyShownViewFound = true
-            }
-
-            if (!currentlyShownViewFound) hideAllChildren()
         }
 
     constructor(context: Context) : this(context, null)
@@ -90,25 +75,26 @@ class SwapperView : FrameLayout {
         }
     }
 
-    @Synchronized fun swapTo(id: SwapperViewId, onComplete: (() -> Unit)? = null) {
-        checkNotNull(viewMap) { "Can't swap to a view if you have not set viewMap" }
-        if (currentlyShownViewId?.first == id) return
+    @Synchronized fun swapTo(viewToSwapTo: View, onComplete: (() -> Unit)? = null) {
+        if (!children.contains(viewToSwapTo)) throw IllegalArgumentException("View must be child to swap to it. Given: ${viewToSwapTo.id}, children: ${children.map { it.id }.joinToString(", ")}")
+        if (currentlyShownViewId == id) return
 
-        val viewToSwapTo = viewMap!!.getValue(id)
-        val currentlyShownView = currentlyShownViewId?.second
-        currentlyShownViewId = Pair(id, viewToSwapTo)
+        val isFirstView = currentlyShownViewId == null
+        val oldView = currentlyShownView
+        currentlyShownViewId = viewToSwapTo.id
 
         fun doneWithAnimation() {
             viewToSwapTo.visibility = View.VISIBLE
-            currentlyShownView?.visibility = View.GONE
+            oldView?.visibility = View.GONE
 
             onComplete?.invoke()
         }
 
-        if (currentlyShownView == null) {
+        if (isFirstView) {
+            hideAllChildren()
             doneWithAnimation()
         } else {
-            swapAnimator(currentlyShownView, viewToSwapTo, animationDuration) {
+            swapAnimator(oldView!!, viewToSwapTo, animationDuration) {
                 doneWithAnimation()
             }
         }

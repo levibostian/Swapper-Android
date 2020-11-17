@@ -21,6 +21,8 @@ You know those moments in your app when you have a `RecyclerView` that has no ro
 * Lightweight. Zero dependencies.
 * UI testing friendly.
 * Setup with default values that should work for 95% of your use cases. Fully customizable for those other cases.
+* Strict semantic versioning for backwards compatibility. 
+* Example app in this project to learn from. 
 
 I recommend you check out 2 other libraries that work nicely with Swapper: [Empty](https://github.com/levibostian/Empty-Android) and [PleaseHold](https://github.com/levibostian/PleaseHold-Android).
 
@@ -63,20 +65,13 @@ Replace `version-here` with: [![Download](https://api.bintray.com/packages/levib
 </LinearLayout>
 ```
 
-*Note: The views you want to swap between must be children of `SwapperView`.*
+> Note: The views you want to swap between **must be children** of `SwapperView`.
+> Note: You can programmatically add more children into `SwapperView`. It's just a `ViewGroup`. 
 
-*Note: You can programmatically add more children into `SwapperView`. It's just a `ViewGroup`. Doing it in XML is just easier.*
-
-* Setup the `SwapperView` with a map of the views that you want to swap between:
+* Swap to views:
 
 ```kotlin
 class MainActivity: AppCompatActivity() {
-
-    // You do not need to an enum as the IDs for Swapper, but it's recommended to avoid typos
-    enum class SwapperViews {
-        FIRST_VIEW,
-        SECOND_VIEW
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,24 +82,19 @@ class MainActivity: AppCompatActivity() {
     }
 
     private fun setupViews() {
-        swapper_view.apply {
-            viewMap = mapOf(
-                // `first_view` and `second_view` are children of the `SwapperView`.
-                // Here, we are mapping an ID to each view.
-                Pair(SwapperViews.FIRST_VIEW.name, first_view),
-                Pair(SwapperViews.SECOND_VIEW.name, second_view)
-            )
-            // When `SwapperView` initializes, it hides all of it's children by default. You must call `swapTo()` to swap to your first view.
-            swapTo(SwapperViews.FIRST_VIEW.name) {
-                // optional callback that's called when animation is complete.
-            }
+        // Make sure to set the first swapping view:
+        swapper_view.swapTo(first_view)
+        // Note: the first time you call swapTo() there will *not* be an animation. 
+
+        // ... do stuff ....
+        // Anytime you want to swap to another View:
+        swapper_view.swapTo(second_view) {
+            // optional callback when animation is done. 
         }
     }
 
 }
 ```
-
-* That's it! Now, when you want to Swapper to transition from the currently shown view to another one, call `swapTo(id)`. Swapper will then show the View for you. Swapper will even fade out the currently shown view and fade in the new view for you for a nice touch 👌. If you want to override the default animation, you can!
 
 ## Customize Swapper
 
@@ -151,15 +141,24 @@ Swapper comes with an example app you can use to play with the library. To run t
 * Open up Swapper project in Android Studio. 
 * Get to writing code!
 
-## Author
+## Contributors 
 
-* Levi Bostian - [GitHub](https://github.com/levibostian), [Twitter](https://twitter.com/levibostian), [Website/blog](http://levibostian.com)
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key))
 
-![Levi Bostian image](https://gravatar.com/avatar/22355580305146b21508c74ff6b44bc5?s=250)
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/levibostian"><img src="https://avatars1.githubusercontent.com/u/2041082?v=4" width="100px;" alt=""/><br /><sub><b>Levi Bostian</b></sub></a><br /><a href="https://github.com/levibostian/Purslane/commits?author=levibostian" title="Code">💻</a> <a href="https://github.com/levibostian/Purslane/commits?author=levibostian" title="Documentation">📖</a> <a href="#maintenance-levibostian" title="Maintenance">🚧</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Contribute
-
-Swapper is open for pull requests. Check out the [list of issues](https://github.com/levibostian/Swapper-android/issues) for tasks I am planning on working on. Check them out if you wish to contribute in that way.
 
 **Want to add features to Swapper?** Before you decide to take a bunch of time and add functionality to the library, please, [create an issue](https://github.com/levibostian/Swapper-android/issues/new) stating what you wish to add. This might save you some time in case your purpose does not fit well in the use cases of Swapper.
 
