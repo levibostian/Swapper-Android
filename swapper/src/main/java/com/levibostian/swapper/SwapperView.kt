@@ -78,7 +78,7 @@ class SwapperView : FrameLayout {
         }
     }
 
-    @Synchronized fun swapTo(viewToSwapTo: View, onComplete: (() -> Unit)? = null, animate: Bool = true) {
+    @Synchronized fun swapTo(viewToSwapTo: View, onComplete: (() -> Unit)? = null, animate: Boolean = true) {
         if (!children.contains(viewToSwapTo)) throw IllegalArgumentException("View must be child to swap to it. Given: ${viewToSwapTo.id}, children: ${children.map { it.id }.joinToString(", ")}")
         if (currentlyShownViewId == id) return
 
