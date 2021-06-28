@@ -78,14 +78,14 @@ class SwapperView : FrameLayout {
         }
     }
 
-    @Synchronized fun swapTo(viewToSwapTo: View, onComplete: (() -> Unit)? = null) {
+    @Synchronized fun swapTo(viewToSwapTo: View, onComplete: (() -> Unit)? = null, animate: Bool = true) {
         if (!children.contains(viewToSwapTo)) throw IllegalArgumentException("View must be child to swap to it. Given: ${viewToSwapTo.id}, children: ${children.map { it.id }.joinToString(", ")}")
         if (currentlyShownViewId == id) return
 
         val oldView = currentlyShownView
         currentlyShownViewId = viewToSwapTo.id // set this here to fix bug: https://github.com/levibostian/Swapper-Android/issues/3
 
-        if (oldView == null) { // first time calling swapTo(). Do not perform an animation
+        if (oldView == null || !animate) { // first time calling swapTo(). Do not perform an animation
             hideAllChildren() // This is here because sometimes childCount == 0 when this View is constructed. So, run it here just to make sure it did run.
 
             // We are not animating. Set visibility here instead.
